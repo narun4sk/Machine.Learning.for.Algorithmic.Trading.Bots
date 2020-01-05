@@ -1,14 +1,7 @@
-from importlib import import_module
-import os
-
 from toolz import merge
- 
 from zipline import run_algorithm
- 
- 
-# These are used by test_examples.py to discover the examples to run.
 from zipline.utils.calendars import register_calendar, get_calendar
-from strategies.base_strategy import BaseStrategy
+from strategies.buy_and_hold import BuyAndHold
 from os import environ
 
 
@@ -50,16 +43,16 @@ _cols_to_check = [
     'trading_days',
     'treasury_period_return',
 ]
- 
- 
+
+
 def run_strategy(strategy_name):
-    """
-    Run an example module from zipline.examples.
-    """
-    mod = BaseStrategy
- 
+    mod = None
+
+    if strategy_name == "buy_and_hold":
+        mod = BuyAndHold()
+
     register_calendar("YAHOO", get_calendar("NYSE"), force=True)
- 
+
     return run_algorithm(
         initialize=getattr(mod, 'initialize', None),
         handle_data=getattr(mod, 'handle_data', None),
